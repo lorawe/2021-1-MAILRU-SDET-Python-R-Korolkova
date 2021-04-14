@@ -13,7 +13,9 @@ class TestOne(BaseCase):
     @pytest.mark.UI("UI")
     def test_logout(self):
         self.login("machindz@mail.ru", "abracadabra")
+        time.sleep(3)
         self.click(basic_locators.RIGHTBUTTON_LOCATOR)
+        time.sleep(3)
         self.click(basic_locators.LOGOUT_LOCATOR)
         self.driver.refresh()
         assert basic_locators.DASHBOARD_URL not in self.check_page()
