@@ -74,8 +74,8 @@ def driver(config, test_dir):
 
 
 @pytest.fixture(scope='function')
-def login(login_page):
-    yield login_page.login(login_page.locators.LOGIN, login_page.locators.PASSWORD)
+def login(login_page, credentials):
+    yield login_page.login(*credentials)
 
 
 @pytest.fixture(scope='function', params=['chrome', 'firefox'])

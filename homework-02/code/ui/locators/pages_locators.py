@@ -26,8 +26,6 @@ class LoginPageLocators(BasePageLocators):
     LOGIN_BUTTON_LOCATOR = (By.XPATH, "//div[contains(@class,'authForm-module-button')]")
     USER_LOCATOR = (By.XPATH, "//div[contains(@class, 'right-module-userNameWrap')]")
     NOTIFY_EMAIL = (By.XPATH, "//div[contains(@class, 'notify-module-content') and contains(text(), 'Введите email')]")
-    LOGIN = "machindz@mail.ru"
-    PASSWORD = "abracadabra"
 
 
 class PythonEventsPageLocators(BasePageLocators):
@@ -54,10 +52,6 @@ class CampaignPageLocators(BasePageLocators):
     INPUT_TITLE = (By.XPATH, "//input[@data-name='title_25']")
     INPUT_TEXT = (By.XPATH, "//textarea[@data-name='text_90']")
     SUBMIT_BUTTON = (By.XPATH, "//button[./div[contains(text(), 'Создать кампанию')]]")
-    AD_URL = "ya.ru"
-    FILE = "test.jpg"
-    TITLE = "TitleText"
-    TEXT = "TextText"
 
 
 class SegmentsPageLocators(BasePageLocators):

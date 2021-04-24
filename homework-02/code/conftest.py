@@ -9,6 +9,17 @@ def pytest_addoption(parser):
     parser.addoption('--browser', default='chrome')
     parser.addoption('--debug_log', action='store_true')
 
+@pytest.fixture(scope='session')
+def credentials():
+    try:
+        with open('C:/tmp/user', 'r') as f:
+            user = f.readline().strip()
+            password = f.readline().strip()
+    except(FileNotFoundError):
+        user = 'machindz@mail.ru'
+        password = 'abracadabra'
+    return user, password
+
 
 @pytest.fixture(scope='session')
 def config(request):
