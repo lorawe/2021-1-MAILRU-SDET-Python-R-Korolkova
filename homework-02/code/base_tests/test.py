@@ -40,8 +40,9 @@ class TestCampaign(BaseCase):
     def test_create_campaign(self, login):
         dashboard_page = login
         campaign_page = dashboard_page.go_to_campaign()
-        campaign_page.create_campaign()
-        dashboard_page.check_campaign()
+        campaign_title = campaign_page.create_campaign()
+        dashboard_page.check_campaign(campaign_title)
+        dashboard_page.delete_campaign()
 
 
 class TestSegments(BaseCase):

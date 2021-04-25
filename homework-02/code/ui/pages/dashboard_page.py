@@ -27,8 +27,10 @@ class DashboardPage(BasePage):
         return CampaignPage(self.driver)
 
     @allure.step('Check campaign')
-    def check_campaign(self):
-        assert (self.find(self.locators.CAMPAIGN_CHECKBOX), "Новая компания не найдена")
+    def check_campaign(self, campaign_title):
+        capmaign_locator = ((self.locators.CAMPAIGN_TITLE_TEMPLATE[0],
+                         self.locators.CAMPAIGN_TITLE_TEMPLATE[1].format(campaign_title)))
+        assert (self.find(capmaign_locator), "Новая компания не найдена")
 
 
     @allure.step('Delete campaign')

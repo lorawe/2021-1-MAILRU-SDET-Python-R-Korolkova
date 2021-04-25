@@ -41,7 +41,7 @@ class DashboardPageLocators(BasePageLocators):
     DELETE_LI = (By.XPATH, "//li[@title = 'Удалить']")
     SEGMENTS_LOCATOR = (By.XPATH, "//a[@href = '/segments']")
     PAGE_LOCATORS_TEMPLATE = (By.XPATH, "//a[@href = '/{}']")
-    CAMPAIGN_CHECKBOX = (By.XPATH, "//div[contains(@data-entity-type,'campaign')]/label/input[@type='checkbox']")
+    CAMPAIGN_TITLE_TEMPLATE = (By.XPATH, "//a[contains(@title, '{}')]")
 
 
 class CampaignPageLocators(BasePageLocators):
@@ -51,6 +51,7 @@ class CampaignPageLocators(BasePageLocators):
     INPUT_FILE = (By.XPATH, "//input[@data-test='image_90x75']")
     INPUT_TITLE = (By.XPATH, "//input[@data-name='title_25']")
     INPUT_TEXT = (By.XPATH, "//textarea[@data-name='text_90']")
+    INPUT_CAMPAIGN_TITLE = (By.XPATH, "//div[contains(@class, 'input_campaign-name')]//input")
     SUBMIT_BUTTON = (By.XPATH, "//button[./div[contains(text(), 'Создать кампанию')]]")
 
 
