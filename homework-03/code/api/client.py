@@ -1,4 +1,3 @@
-import base64
 import json
 import logging
 import os
@@ -6,7 +5,6 @@ from datetime import datetime
 from urllib.parse import urljoin
 
 import requests
-from requests.cookies import cookiejar_from_dict
 
 logger = logging.getLogger('test')
 
@@ -64,7 +62,8 @@ class ApiClient:
         url = urljoin(self.base_url, location)
 
         self.log_pre(method, url, headers, data, expected_status)
-        response = self.session.request(method, url, headers=headers, data=data, allow_redirects=allow_redirects, files=files)
+        response = self.session.request(method, url, headers=headers, data=data, allow_redirects=allow_redirects,
+                                        files=files)
         self.log_post(response)
 
         if response.status_code != expected_status:
@@ -84,48 +83,16 @@ class ApiClient:
         return {'Content-Type': 'application/x-www-form-urlencoded'}
 
     def get_token(self):
-        headers = self.post_headers
-        headers['Cookie'] = f'mc={self.session.cookies["mc"]}; ssdc={self.session.cookies["ssdc"]}; sdcs={self.session.cookies["sdcs"]}'
-        new_headers = self._request('GET', urljoin(self.base_url, '/csrf'), jsonify=False, headers=headers).headers['Set-Cookie'].split(';')
+        location = '/csrf'
+        headers = {'Cookie': f'mc={self.session.cookies["mc"]}'}
+        new_headers = self._request('GET', location=location, jsonify=False, headers=headers).headers[
+            'Set-Cookie'].split(';')
         token_header = [h for h in new_headers if 'csrftoken' in h]
         if not token_header:
             raise Exception('CSRF token not found in main page headers')
 
-        token_header = token_header[0]
-        token = token_header.split('=')[-1]
-
+        token = self.session.cookies['csrftoken']
         return token
-
-    def get_sdcs(self, url):
-        self.base_url = url
-        location = ''
-        headers = self.post_headers
-        headers['Cookies'] = f'mc={self.session.cookies["mc"]}'
-
-        result = self._request('GET', location, headers=headers, expected_status=302,
-                               allow_redirects=False, jsonify=False)
-
-        try:
-            response_cookies = result.headers['Set-Cookie'].split(';')
-        except Exception as e:
-            raise InvalidLoginException(e)
-
-        new_sdcs = [c for c in response_cookies if "sdcs" in c][0].split('=')[-1]
-        return new_sdcs
-
-    def get_sdcs_token(self, url):
-        location = url
-        headers = self.post_headers
-        headers['Cookies'] = f'mc={self.session.cookies["mc"]}'
-
-        result = self._request('GET', location, headers=headers, expected_status=302,
-                               allow_redirects=False, jsonify=False)
-        try:
-            response_location = result.headers['Location']
-        except Exception as e:
-            raise InvalidLoginException(e)
-
-        return response_location
 
     def get_json_file(self, filename):
         current_dir = os.path.abspath(os.path.dirname(__file__))
@@ -152,21 +119,11 @@ class ApiClient:
         data = {
             'email': user,
             'password': password,
+            'continue': 'https://target.my.com/auth/mycom?state=target_login%3D1%26ignore_opener%3D1#email',
+            'failure': 'https://account.my.com/login/'
         }
 
-        result = self._request('POST', location, headers=headers, data=data, jsonify=False, expected_status=302,
-                               allow_redirects=False)
-
-        try:
-            response_cookies = result.headers['Set-Cookie'].split(';')
-        except Exception as e:
-            raise InvalidLoginException(e)
-
-        new_location = '/sdc?from=https%3A%2F%2Ftarget.my.com%2Fauth%2Fmycom%3Fstate%3Dtarget_login%253D1%2526ignore_opener%253D1'
-        new_sdcs_token_location = self.get_sdcs_token(new_location)
-
-        sdcs_url = new_sdcs_token_location
-        new_sdcs = self.get_sdcs(url=sdcs_url)
+        result = self._request('POST', location, headers=headers, data=data, jsonify=False)
 
         self.base_url = 'https://target.my.com'
         csrftoken = self.get_token()
@@ -175,34 +132,33 @@ class ApiClient:
 
     def post_image(self):
         location = "api/v2/content/static.json"
-        headers = self.post_headers
-        headers['Content-Type'] = "multipart/form-data; boundary=----WebKitFormBoundaryzV0dcU6bUOexnUAW"
-        headers[
-            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
-        headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
+        headers = {
+            'Cookie': f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}',
+            'X-CSRFToken': f'{self.session.cookies["csrftoken"]}'}
 
         new_img = open(self.get_image('test.jpg'), mode='rb')
 
-        files = [
-            ('file', ('test.jpg', new_img, 'image/jpeg')),
-            ('data', '{"width":0,"height":0}')]
+        files = {'file': ('test.jpg', new_img, 'image/jpeg')}
 
         result = self._request('POST', location, headers=headers, files=files)
         return result
-
 
     def post_campaign_create(self):
         location = "/api/v2/campaigns.json"
         headers = self.post_headers
         headers['Content-Type'] = "application/json"
-        headers['Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
+        headers[
+            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
 
         current_date = datetime.now()
         campaign_title = f"TestCampaignAPI at {current_date}"
         json_campaign = self.get_json_file('campaign.json')
-        json_campaign['name'] = campaign_title
 
+        img_id = self.post_image()['id']
+        json_campaign['name'] = campaign_title
+        json_campaign['banners'][0]['urls']['primary']['id'] = img_id
+        json_campaign['banners'][0]['content']['image_90x75']['id'] = img_id
         data = json.dumps(json_campaign)
 
         result = self._request('POST', location, headers=headers, data=data)
@@ -217,7 +173,7 @@ class ApiClient:
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
 
         data = {
-            'status':'deleted'
+            'status': 'deleted'
         }
 
         data = json.dumps(data)
@@ -253,7 +209,7 @@ class ApiClient:
 
         data = [
             {'source_id': f'{segment_id}',
-                       'source_type': 'segment'
+             'source_type': 'segment'
              }
         ]
 
