@@ -1,0 +1,13 @@
+pytest
+pytest-xdist
+selenium
+allure-pytest
+webdriver-manager
+urllib3
+requests
+pyparsing
+packaging
+iniconfig
+idna
+configparser
+allure-python-commons
