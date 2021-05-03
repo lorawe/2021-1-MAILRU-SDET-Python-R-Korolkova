@@ -11,3 +11,8 @@ iniconfig
 idna
 configparser
 allure-python-commons
+Faker
+six
+iniconfig
+
+
