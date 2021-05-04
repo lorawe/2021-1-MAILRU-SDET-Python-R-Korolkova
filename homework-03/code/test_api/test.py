@@ -1,6 +1,5 @@
 import pytest
 
-from api.client import InvalidLoginException
 from test_api.base import ApiBase
 
 

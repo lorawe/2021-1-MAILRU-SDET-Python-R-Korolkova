@@ -8,8 +8,6 @@ import allure
 
 from api.client import ApiClient
 
-from ui.fixtures import *
-
 
 def pytest_addoption(parser):
     parser.addoption('--url', default='https://target.my.com')

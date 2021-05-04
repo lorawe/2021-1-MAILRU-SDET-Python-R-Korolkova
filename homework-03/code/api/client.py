@@ -126,15 +126,13 @@ class ApiClient:
         result = self._request('POST', location, headers=headers, data=data, jsonify=False)
 
         self.base_url = 'https://target.my.com'
-        csrftoken = self.get_token()
+        self.csrf_token = self.get_token()
 
         return result
 
     def post_image(self):
         location = "api/v2/content/static.json"
-        headers = {
-            'Cookie': f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}',
-            'X-CSRFToken': f'{self.session.cookies["csrftoken"]}'}
+        headers = {'X-CSRFToken': f'{self.session.cookies["csrftoken"]}'}
 
         new_img = open(self.get_image('test.jpg'), mode='rb')
 
@@ -147,8 +145,6 @@ class ApiClient:
         location = "/api/v2/campaigns.json"
         headers = self.post_headers
         headers['Content-Type'] = "application/json"
-        headers[
-            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
 
         current_date = datetime.now()
@@ -168,8 +164,6 @@ class ApiClient:
         location = f'/api/v2/campaigns/{campaign_id}.json'
         headers = self.post_headers
         headers['Content-Type'] = "application/json"
-        headers[
-            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
 
         data = {
@@ -185,8 +179,6 @@ class ApiClient:
         location = "/api/v2/remarketing/segments.json"
         headers = self.post_headers
         headers['Content-Type'] = "application/json"
-        headers[
-            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
 
         current_date = datetime.now()
@@ -200,30 +192,18 @@ class ApiClient:
         return result
 
     def post_segment_delete(self, segment_id):
-        location = "/api/v1/remarketing/mass_action/delete.json"
+        location = f"/api/v2/remarketing/segments/{segment_id}.json"
         headers = self.post_headers
         headers['Content-Type'] = "application/json"
-        headers[
-            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
 
-        data = [
-            {'source_id': f'{segment_id}',
-             'source_type': 'segment'
-             }
-        ]
-
-        data = json.dumps(data)
-
-        result = self._request('POST', location, headers=headers, data=data, jsonify=True)
+        result = self._request('DELETE', location, headers=headers, jsonify=False, expected_status=204)
         return result
 
     def check_segment(self, segment_id, is_exist=True):
         location = f'/api/v2/remarketing/segments/{segment_id}.json'
         headers = self.post_headers
         headers['Content-Type'] = "application/json"
-        headers[
-            'Cookie'] = f'mc={self.session.cookies["mc"]}; csrftoken={self.session.cookies["csrftoken"]}; sdcs={self.session.cookies["sdcs"]}'
         headers['X-CSRFToken'] = f'{self.session.cookies["csrftoken"]}'
         if is_exist:
             result = self._request('GET', location, headers=headers, expected_status=200)
