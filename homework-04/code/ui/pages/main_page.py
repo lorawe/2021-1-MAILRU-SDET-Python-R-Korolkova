@@ -1,5 +1,4 @@
 from ui.pages.base_page import BasePage
-from ui.pages.settings_page import SettingsPage
 from ui.locators.locators_android import MainPageANDROIDLocators
 import allure
 
@@ -24,6 +23,9 @@ class MainPage(BasePage):
         pass
 
     def check_number(self, suggest):
+        pass
+
+    def check_news_source(self, source):
         pass
 
 
@@ -67,3 +69,9 @@ class MainPageANDROID(MainPage):
                           self.locators.SUGGEST_ITEM[1].format(suggest))
         self.swipe_to_element(suggest_locator, 2)
         self.click_for_android(suggest_locator)
+
+    @allure.step("Проверяем источник новостей")
+    def check_news_source(self, source):
+        self.click_on_keyboard_button()
+        self.enter_value_in_search_field('News')
+        self.check_dialog_text(source)

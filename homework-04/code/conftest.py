@@ -1,33 +1,22 @@
 import logging
-import os
-import shutil
 import sys
-import allure
 
 from ui.fixtures import *
 
 
 def pytest_addoption(parser):
-    parser.addoption('--browser', default='chrome')
     parser.addoption('--url', default='https://marusia.mail.ru/')
-    parser.addoption('--os', default='web')
     parser.addoption('--appium', default='http://127.0.0.1:4723/wd/hub')
     parser.addoption('--debug_log', action='store_true')
 
 
 @pytest.fixture(scope='session')
 def config(request):
-    browser = request.config.getoption('--browser')
-    device_os = request.config.getoption('--os')
-    if device_os == 'mw':
-        url = 'https://marusia.mail.ru/'
-    elif device_os == 'web':
-        url = 'https://marusia.mail.ru/'
-    else:
-        url = request.config.getoption('--url')
+    url = request.config.getoption('--url')
     appium = request.config.getoption('--appium')
     debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'browser': browser, 'device_os': device_os, 'appium': appium, 'debug_log': debug_log}
+
+    return {'url': url, 'appium': appium, 'debug_log': debug_log}
 
 
 @pytest.fixture(scope='session')
@@ -102,11 +91,8 @@ def add_allure_environment_property(request, config):
     alluredir = request.config.getoption('--alluredir')
     if alluredir:
         env_props = dict()
-        if config['device_os'] in ['web', 'mw']:
-            env_props['Browser'] = 'Chrome'
-        else:
-            env_props['Appium'] = '1.20'
-            env_props['Android_emulator'] = '8.1'
+        env_props['Appium'] = '1.20'
+        env_props['Android_emulator'] = '8.1'
         if not os.path.exists(alluredir):
             os.makedirs(alluredir)
         allure_env_path = os.path.join(alluredir, 'environment.properties')

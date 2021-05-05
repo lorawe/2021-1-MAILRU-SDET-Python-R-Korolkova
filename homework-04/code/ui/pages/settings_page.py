@@ -10,6 +10,9 @@ class SettingsPage(BasePage):
     def click_on_news_source(self, source):
         pass
 
+    def click_on_about_button(self):
+        pass
+
     def check_news_source(self):
         pass
 
@@ -19,6 +22,11 @@ class SettingsPage(BasePage):
     def click_on_settings_back_button(self):
         pass
 
+    def set_news_source(self, source):
+        pass
+
+    def go_back_to_main(self):
+        pass
 
 class SettingsPageANDROID(SettingsPage):
     locators = SettingsPageANDROIDLocators()
@@ -45,3 +53,19 @@ class SettingsPageANDROID(SettingsPage):
     @allure.step("Нажимаем на кнопку назад")
     def click_on_settings_back_button(self):
         self.click_for_android(self.locators.TOOLBAR_SETTINGS_BACK_BUTTON)
+
+    @allure.step("Устанавливаем источник новостей")
+    def set_news_source(self, source):
+        self.click_on_news_source_button()
+        self.click_on_news_source(source)
+        self.check_news_source()
+
+    @allure.step("Возвращаемся на главную страницу со страницы настроек")
+    def go_back_to_main(self):
+        self.click_on_source_back_button()
+        self.click_on_source_back_button()
+
+    @allure.step("Переходим на страницу 'О Приложении'")
+    def click_on_about_button(self):
+        self.swipe_to_element(self.locators.ABOUT_BUTTON, 3)
+        self.click_for_android(self.locators.ABOUT_BUTTON)

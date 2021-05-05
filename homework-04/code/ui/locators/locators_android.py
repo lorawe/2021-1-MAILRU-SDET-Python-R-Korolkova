@@ -1,4 +1,3 @@
-from selenium.webdriver.common.by import By
 from appium.webdriver.common.mobileby import MobileBy
 
 
@@ -24,4 +23,8 @@ class SettingsPageANDROIDLocators(BasePageANDROIDLocators):
                            "//android.widget.LinearLayout//android.widget.ImageButton")
     TOOLBAR_SETTINGS_BACK_BUTTON = (MobileBy.XPATH,
                                    "//android.widget.LinearLayout[contains(@id, 'ru.mail.search.electroscope:id/user_settings_toolbar')]//android.widget.ImageButton")
+    ABOUT_BUTTON = (MobileBy.ID, "ru.mail.search.electroscope:id/user_settings_about")
 
+class AboutPageANDROIDLocators(BasePageANDROIDLocators):
+    VERSION = (MobileBy.ID, "ru.mail.search.electroscope:id/about_version")
+    COPYRIGHTING = (MobileBy.ID, "ru.mail.search.electroscope:id/about_copyright")
