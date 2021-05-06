@@ -8,10 +8,9 @@ print("Топ 5 пользователей по количеству запро�
 with open(file_path, encoding='utf-8') as f:
     for line in f:
         line_list = line.split()
-        if int(line_list[8]) >= 500 and int(line_list[8]) < 600:
+        if 500 <= int(line_list[8]) < 600:
             new_lines.append(line)
             ip_list.append(line_list[0])
-    #counted_new_lines = sorted(new_lines, key=lambda line: line.split()[9])
     ip_list_set = set(ip_list)
     counted_ips = {}
     for ip in ip_list_set:
