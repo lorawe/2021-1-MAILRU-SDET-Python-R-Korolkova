@@ -1,10 +1,5 @@
-import os
-import shutil
-
-import allure
 import pytest
 from appium import webdriver
-from selenium import webdriver as wd
 from ui.pages.base_page import BasePage
 
 from ui import pages

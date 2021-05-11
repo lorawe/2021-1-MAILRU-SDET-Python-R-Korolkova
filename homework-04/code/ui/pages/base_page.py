@@ -6,7 +6,6 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from appium.webdriver.common.touch_action import TouchAction
-from utils.decorators import wait
 
 CLICK_RETRY = 3
 BASE_TIMEOUT = 5

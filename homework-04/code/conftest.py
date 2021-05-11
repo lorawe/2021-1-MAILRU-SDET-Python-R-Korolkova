@@ -1,5 +1,8 @@
 import logging
+import os
+import shutil
 import sys
+import allure
 
 from ui.fixtures import *
 

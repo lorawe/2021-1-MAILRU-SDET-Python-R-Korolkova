@@ -25,8 +25,9 @@ class SettingsPage(BasePage):
     def set_news_source(self, source):
         pass
 
-    def go_back_to_main(self):
+    def go_back_to_main(self, pressing):
         pass
+
 
 class SettingsPageANDROID(SettingsPage):
     locators = SettingsPageANDROIDLocators()
@@ -61,9 +62,9 @@ class SettingsPageANDROID(SettingsPage):
         self.check_news_source()
 
     @allure.step("Возвращаемся на главную страницу со страницы настроек")
-    def go_back_to_main(self):
-        self.click_on_source_back_button()
-        self.click_on_source_back_button()
+    def go_back_to_main(self, pressing):
+        for i in range(pressing):
+            self.click_on_source_back_button()
 
     @allure.step("Переходим на страницу 'О Приложении'")
     def click_on_about_button(self):

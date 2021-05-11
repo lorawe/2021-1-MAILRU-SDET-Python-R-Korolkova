@@ -10,7 +10,7 @@ class TestMarussiaAndroid(BaseCase):
         self.main_page.click_on_keyboard_button()
         self.main_page.enter_value_in_search_field('Russia')
         self.main_page.check_dialog_title('Россия')
-        self.main_page.check_number('численность')
+        self.main_page.check_number('население россии')
         self.main_page.check_dialog_title('146 млн.')
 
     @pytest.mark.AndroidUI
@@ -26,15 +26,14 @@ class TestMarussiaAndroid(BaseCase):
         self.main_page.click_on_deny_buttons()
         self.main_page.click_on_menu_button()
         self.settings_page.set_news_source(source)
-        self.settings_page.go_back_to_main()
+        self.settings_page.go_back_to_main(2)
         self.main_page.check_news_source(source)
 
     @pytest.mark.AndroidUI
     def test_copyrighting(self):
-        version = "1.39.1"
         copyrighting_str = "Все права защищены"
         self.main_page.click_on_deny_buttons()
         self.main_page.click_on_menu_button()
         self.settings_page.click_on_about_button()
-        self.about_page.check_version(version)
+        self.about_page.check_version()
         self.about_page.check_copyright(copyrighting_str)
