@@ -14,5 +14,4 @@ allure-python-commons
 Faker
 six
 iniconfig
-
-
+Appium-Python-Client
