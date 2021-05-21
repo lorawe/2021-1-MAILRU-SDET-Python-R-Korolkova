@@ -16,6 +16,7 @@ class MySQLBuilder:
             count=count
         )
         self.client.session.add(count_request)
+        self.client.session.commit()
         return count_request
 
     def create_count_method(self, method, count):
@@ -30,6 +31,7 @@ class MySQLBuilder:
             method=method,
         )
         self.client.session.add(count_method)
+        self.client.session.commit()
         return count_method
 
     def create_top_request(self, url, count):
@@ -44,6 +46,7 @@ class MySQLBuilder:
             url=url
         )
         self.client.session.add(top_request)
+        self.client.session.commit()
         return top_request
 
     def create_bad_request(self, url, status, weight, ip):
@@ -66,6 +69,7 @@ class MySQLBuilder:
             ip=ip
         )
         self.client.session.add(bad_request)
+        self.client.session.commit()
         return bad_request
 
     def create_server_err_request(self, count, ip):
@@ -80,4 +84,5 @@ class MySQLBuilder:
             ip=ip
         )
         self.client.session.add(server_err_request)
+        self.client.session.commit()
         return server_err_request

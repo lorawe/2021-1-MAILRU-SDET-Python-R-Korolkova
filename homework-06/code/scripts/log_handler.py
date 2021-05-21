@@ -1,4 +1,5 @@
 import os
+from urllib.parse import unquote
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 file_path_log = os.path.normpath(os.path.join(current_dir, f'../../logs/access.log'))
@@ -45,7 +46,7 @@ def top10_requests():
                               :10]
         result_dict = {}
         for u in sorted_counted_urls:
-            result_dict[u[1]] = u[0]
+            result_dict[u[1]] = unquote(u[0])
         return result_dict
 
 
@@ -60,7 +61,7 @@ def top5_heavy4XX():
         result_list = []
         for i in range(5):
             sorted_split_new_lines = sorted_new_lines[i]
-            result_list.append([sorted_split_new_lines[6], sorted_split_new_lines[8], sorted_split_new_lines[9],
+            result_list.append([unquote(sorted_split_new_lines[6]), sorted_split_new_lines[8], sorted_split_new_lines[9],
                                 sorted_split_new_lines[0]])
         return result_list
 
