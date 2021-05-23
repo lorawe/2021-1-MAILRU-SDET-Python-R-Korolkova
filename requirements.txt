@@ -15,3 +15,6 @@ Faker
 six
 iniconfig
 Appium-Python-Client
+pymysql
+sqlalchemy
+cryptography
