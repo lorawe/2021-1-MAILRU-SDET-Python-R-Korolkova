@@ -18,3 +18,5 @@ Appium-Python-Client
 pymysql
 sqlalchemy
 cryptography
+Flask
+requests

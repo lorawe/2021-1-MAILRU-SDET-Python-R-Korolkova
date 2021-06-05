@@ -1,6 +1,7 @@
 import logging
 import sys
 
+import pytest
 from ui.fixtures import *
 
 
