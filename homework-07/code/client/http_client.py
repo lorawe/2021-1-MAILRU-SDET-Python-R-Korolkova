@@ -3,11 +3,13 @@ import settings
 
 
 class HttpClient:
+
     host = settings.MOCK_HOST
     port = int(settings.MOCK_PORT)
 
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.settimeout(0.1)
+    def __init__(self):
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.settimeout(0.1)
 
     def connect(self):
         self.client.connect((self.host, self.port))
@@ -24,7 +26,7 @@ class HttpClient:
 
     def delete(self, params):
         method = "DELETE"
-        delete_params = f"/delete_surname/{params}"
+        delete_params = f"/delete_user/{params}"
         return self.send(method, delete_params)
 
     def get(self, params):
@@ -46,7 +48,7 @@ class HttpClient:
                 total_data.append(data.decode())
                 break
             else:
-                #self.client.close()
+                self.client.close()
                 break
         return ''.join(total_data).splitlines()
 

@@ -6,26 +6,31 @@ from tests.test import BaseCase
 from utils.fixtures import *
 
 
-class Tests(BaseCase):
+class TestMock(BaseCase):
 
     def test_post(self, http_client):
         params = 'Egor/Postin'
         name = 'Egor'
         post_result = http_client.post(params)
         result = http_client.get(name)
-        assert json.loads(result[-1]) == ['Egor', 'Postin']
+        assert json.loads(result[-1]) == {'Egor': 'Postin'}
 
-    def test_put(self, http_client, create_user):
+    def test_put(self, create_user):
         name = 'Egor'
         params = 'Egor/Testovich'
         user = create_user
-        print(user)
-        result = http_client.put(params)
-        #result = http_client.get(name)
-        assert json.loads(result[-1]) == ['Egor', 'Pupin']
+        http_client = HttpClient()
+        http_client.connect()
+        put_result = http_client.put(params)
+        result = http_client.get(name)
+        http_client.close()
+        assert json.loads(result[-1]) == {'Egor': 'Testovich'}
 
-    def test_delete(self, http_client, create_user):
+    def test_delete(self, create_user):
         name = 'Egor'
-        result = http_client.delete(name)
-        #result = http_client.get(name)
-        assert json.loads(result[-1]) == ['Egor', 'Pupin']
+        http_client = HttpClient()
+        http_client.connect()
+        http_client.delete(name)
+        result = http_client.get(name)
+        http_client.close()
+        assert json.loads(result[-1]) == 'Egor'

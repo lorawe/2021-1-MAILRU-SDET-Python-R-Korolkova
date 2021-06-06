@@ -17,4 +17,5 @@ def create_user(http_client):
     name = 'Egor'
     params_old = f'{name}/Pupin'
     result = http_client.post(params_old)
+    http_client.close()
     return result
