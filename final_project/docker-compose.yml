@@ -1,0 +1,65 @@
+version: '3.8'
+
+networks:
+    my-app-network:
+      external: true
+      name: my-app-network
+
+services:
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    networks:
+      - my-app-network
+    volumes:
+      - "/home/userr/config/selenoid:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/home/userr/config/selenoid/video:/opt/selenoid/video"
+      - "/home/userr/config/selenoid/logs:/opt/selenoid/logs"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs"]
+    ports:
+      - "4444:4444"
+
+  percona:
+    image: "percona:latest"
+    tty: true
+    networks:
+      - my-app-network
+    volumes:
+      - /home/userr/config/db:/etc/appconfig/db
+    environment:
+      MYSQL_ROOT_PASSWORD: MYSQL_CONTAINER_SDET_MAIL_PASS
+    healthcheck:
+      test: ['CMD', 'mysqladmin', '-uroot', '-pMYSQL_CONTAINER_SDET_MAIL_PASS', 'ping', '-h', '127.0.0.1']
+      timeout: 1s
+      retries: 30
+
+  vk_api:
+    image: "vk_api:latest"
+    tty: true
+    networks:
+      - my-app-network
+    entrypoint: [ "python", "mock/vk_api_mock.py" ]
+
+  myapp:
+    image: "myapp:latest"
+    tty: true
+    networks:
+      - my-app-network
+    volumes:
+      - "./config/appconfig:/etc/appconfig"
+      - "./config/db:/etc/db_config"
+    ports:
+      - "8080:8080"
+    links:
+      - percona:localhost
+      - vk_api:localhosts
+    entrypoint: ["/app/myapp", "--config=/etc/appconfig/config"]
+    depends_on:
+      percona:
+        condition: service_healthy
+      vk_api:
+        condition: service_started
+      selenoid:
+        condition: service_started

@@ -1,12 +1,13 @@
 # установка базового образа (host OS)
 FROM python:3.8
+# копирование файла зависимостей в рабочую директорию
+ADD /requirements.txt requirements.txt
+# установка зависимостей
+RUN pip install -r requirements.txt
+# копирование содержимого локальной директории src в рабочую директорию
+ADD /code code
 # установка рабочей директории в контейнере
 WORKDIR /code
-# копирование файла зависимостей в рабочую директорию
-COPY requirements.txt .
-# установка зависимостей
-RUN pip install --no-cache-dir -r requirements.txt
-# копирование содержимого локальной директории src в рабочую директорию
-COPY code/mock .
+
 # команда, выполняемая при запуске контейнера
-CMD [ "python", "./vk_api_mock.py" ]
+CMD [ "python", "mock/vk_api_mock.py" ]

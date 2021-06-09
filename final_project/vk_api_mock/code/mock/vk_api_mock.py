@@ -9,7 +9,7 @@ import argparse
 app = Flask(__name__)
 
 SURNAME_DATA = {}
-config = []
+config = {}
 
 arg_parser = argparse.ArgumentParser()
 config_parser = configparser.ConfigParser()
@@ -100,11 +100,13 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    arg_parser.add_argument('--config', default="../config/config.ini", type=str)
+    """arg_parser.add_argument('--config', default="../config/config.ini", type=str)
     args = arg_parser.parse_args()
     config_file = args.config
     config_parser.read(config_file)
     config = config_parser["vk_api"]
-    print(config["mock_host"])
+    print(config["mock_host"])"""
+    config["mock_host"] = "localhost"
+    config["mock_port"] = "8086"
     app.debug = False
     start_mock()
