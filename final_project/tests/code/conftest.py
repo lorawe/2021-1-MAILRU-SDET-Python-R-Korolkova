@@ -14,20 +14,12 @@ def pytest_addoption(parser):
 def credentials():
     try:
         with open('../config/db_config', 'r') as f:
-            mysql_host = f.readline().strip()
-            mysql_port = f.readline().strip()
-            mysql_db = f.readline().strip()
-            table = f.readline().strip()
             user = f.readline().strip()
             password = f.readline().strip()
     except(FileNotFoundError):
-        mysql_host = "percona"
-        mysql_port = "3306"
-        mysql_db = "technoatom"
-        table = "test_users"
         user = "test_qa"
         password = "qa_test"
-    return mysql_host, mysql_port, mysql_db, table, user, password
+    return user, password
 
 
 @pytest.fixture(scope='session')
