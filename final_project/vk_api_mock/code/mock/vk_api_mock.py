@@ -1,4 +1,3 @@
-import configparser
 import threading
 import time
 
@@ -8,11 +7,9 @@ import argparse
 
 app = Flask(__name__)
 
-SURNAME_DATA = {}
+SURNAME_DATA = {"testuser": "10"}
 config = {}
 
-arg_parser = argparse.ArgumentParser()
-config_parser = configparser.ConfigParser()
 
 @app.route(f'/post_user/<username>', methods=['POST'])
 def post_user_surname(username):
@@ -100,12 +97,6 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    """arg_parser.add_argument('--config', default="../config/config.ini", type=str)
-    args = arg_parser.parse_args()
-    config_file = args.config
-    config_parser.read(config_file)
-    config = config_parser["vk_api"]
-    print(config["mock_host"])"""
     config["mock_host"] = "localhost"
     config["mock_port"] = "8086"
     app.debug = False

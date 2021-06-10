@@ -1,4 +1,4 @@
-CREATE IF NOT EXISTS DATABASE technoatom;
+CREATE DATABASE technoatom;
 use technoatom;
 CREATE TABLE IF NOT EXISTS `test_users` (
   `id` int NOT NULL AUTO_INCREMENT,

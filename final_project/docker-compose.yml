@@ -1,5 +1,6 @@
 version: '3.8'
 
+
 networks:
     my-app-network:
       external: true
@@ -11,23 +12,32 @@ services:
     networks:
       - my-app-network
     volumes:
-      - "/home/userr/config/selenoid:/etc/selenoid"
+      - "./config/selenoid:/etc/selenoid"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/home/userr/config/selenoid/video:/opt/selenoid/video"
-      - "/home/userr/config/selenoid/logs:/opt/selenoid/logs"
+      - "./config/selenoid/video:/opt/selenoid/video"
+      - "./config/selenoid/logs:/opt/selenoid/logs"
     environment:
       - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
-    command: [ "-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs"]
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "my-app-network"]
     ports:
       - "4444:4444"
+
+  selenoid-ui:
+    image: "aerokube/selenoid-ui:latest-release"
+    ports:
+      - "8080:8080"
+    command: [ "--selenoid-uri","http://selenoid:4444"]
+    networks:
+      - my-app-network
+    depends_on:
+      selenoid:
+        condition: service_started
 
   percona:
     image: "percona:latest"
     tty: true
     networks:
       - my-app-network
-    volumes:
-      - /home/userr/config/db:/etc/appconfig/db
     environment:
       MYSQL_ROOT_PASSWORD: MYSQL_CONTAINER_SDET_MAIL_PASS
     healthcheck:
@@ -40,6 +50,8 @@ services:
     tty: true
     networks:
       - my-app-network
+    ports:
+      - "8086:8086"
     entrypoint: [ "python", "mock/vk_api_mock.py" ]
 
   myapp:
@@ -51,15 +63,17 @@ services:
       - "./config/appconfig:/etc/appconfig"
       - "./config/db:/etc/db_config"
     ports:
-      - "8080:8080"
+      - "8085:8085"
     links:
       - percona:localhost
-      - vk_api:localhosts
-    entrypoint: ["/app/myapp", "--config=/etc/appconfig/config"]
+      - vk_api:localhost
+    entrypoint: /bin/bash /etc/db_config/create_db_and_start.sh
     depends_on:
       percona:
         condition: service_healthy
       vk_api:
         condition: service_started
       selenoid:
+        condition: service_started
+      selenoid-ui:
         condition: service_started
